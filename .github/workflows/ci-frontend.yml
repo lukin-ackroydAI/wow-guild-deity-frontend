@@ -1,33 +1,28 @@
-name: Frontend CI
+name: CI Frontend
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
   pull_request:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v3  # Updated to use v3
+
       - name: Set up Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3  # Updated to use v3
         with:
-          node-version: '14'
+          node-version: '20'  # Updated to use Node.js 20
+
       - name: Install dependencies
         run: npm install
+
       - name: Run tests
         run: npm test
-      - name: Send Slack Notification
-        if: always()
-        uses: rtCamp/action-slack-notify@v2
-        env:
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-        with:
-          args: |
-            status=${{ job.status }}
-            author_name=GitHub Actions
-            title="Frontend CI Workflow ${{ job.status }}"
-            message="The Frontend CI workflow has ${{ job.status }}."
